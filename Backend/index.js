@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import connectDb from "./DB/connection.js";
 
 // import initApp from "./src/modules/index.router.js";
 // import "dotenv/config";
@@ -29,17 +30,31 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection URI
-const MONGO_URI = 'mongodb://127.0.0.1:27017';
-//const MONGO_URI = 'mongodb://mongo-shared-dev:fikTpih4U2!@20.218.241.192:27017/?directConnection=true&appName=mongosh+1.8.2&authMechanism=DEFAULT';
+// const MONGO_URI = 'mongodb://127.0.0.1:27017';
+// const MONGO_URI = 'mongodb://mongo-shared-dev:fikTpih4U2!@20.218.241.192:27017/?directConnection=true&appName=mongosh+1.8.2&authMechanism=DEFAULT';
 
-const dbname = 'todos';
+/**
+connectDb()
+  .then(() => {
+    // Start server only if DB connection succeeds
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on http://0.0.0.0:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to start server due to DB connection error:", error);
+    process.exit(1); // Exit if connection fails
+  });*/
+
+// const dbname = 'todos';
 
 // Connect to MongoDB
+/**
 mongoose
   .connect(MONGO_URI, { dbname })
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('MongoDB connection error:', error));
-
+*/
 // Mongoose Schema and Model
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -133,8 +148,38 @@ app.get('/', async (req, res) => {
 
 });
 
+/**
+connectDb()
+  .then(() => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on http://0.0.0.0:${PORT}`);
+    });
+    server.on('error', (err) => {
+      console.error('Server startup error:', err);
+      process.exit(1); // Exit to allow Docker to restart cleanly
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to start server due to DB connection error:", error);
+    process.exit(1); // Exit on DB connection failure
+  })
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
+*/
+// Connect to MongoDB and start the server
+connectDb()
+  .then(() => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on http://0.0.0.0:${PORT}`);
+    });
+    server.on('error', (err) => {
+      console.error('Server startup error:', err);
+      process.exit(1); // Exit to allow Docker to restart cleanly
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to start server due to DB connection error:", error);
+    process.exit(1); // Exit on DB connection failure
+  });
