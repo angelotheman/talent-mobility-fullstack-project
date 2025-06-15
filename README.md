@@ -1,40 +1,78 @@
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/62269745/174906065-7bb63e14-879a-4740-849c-0821697aeec2.png#gh-light-mode-only" width="40%">
-    <img src="https://user-images.githubusercontent.com/62269745/174906068-aad23112-20fe-4ec8-877f-3ee1d9ec0a69.png#gh-dark-mode-only" width="40%">
-</p>
+# Todo List Application
 
-# Full-Stack Todo List Application
-
-This repository hosts a full-stack Todo List application designed to allow users to create, manage, and organize their tasks efficiently. The application features a React-based frontend and a Node.js backend, utilizing MongoDB for data persistence.
-
-## Technologies Used
-
-- **Frontend**: React, Material-UI
-- **Backend**: Node.js, Express
-- **Database**: MongoDB
-- **Other Tools**: Vite, React Toastify, Lucide Icons
+This project is a containerized 3-tier Todo List application developed for the Cloud Engineering Pathway Assessment. It consists of a React frontend, a Node.js backend, and a MongoDB database, orchestrated using Docker and Docker Compose.
 
 ## Project Structure
 
-The project is divided into two main parts:
-- **Frontend**: Located in the `frontend/` directory with its own [README](frontend/README.md).
-- **Backend**: Located in the `backend/` directory with its own [README](backend/README.md).
+- **Frontend**: React application built with Vite, served at `http://localhost:3001`.
+- **Backend**: Node.js/Express API, connects to MongoDB, served at `http://localhost:3000`.
+- **Database**: MongoDB, stores users and todos, accessible within the Docker network.
 
-## Features
+## Prerequisites
 
-- Create, view, update, and delete todo items.
-- Organize tasks with tags/categories.
-- Responsive user interface adaptable to different screen sizes.
-- Real-time updates without page reloads.
+- **Docker**: Version 24.0 or later.
+- **Docker Compose**: Version 2.20 or later.
+- **Git**: To clone the repository.
+- **Node.js**: Optional, for local development outside Docker (v22 recommended).
+- **Operating System**: Linux, macOS, or Windows with WSL2 for optimal Docker performance.
 
-## Contributing
+## Setup Instructions
 
-Contributions are welcome! See the specific README files in the `frontend/` and `backend/` directories for more details on contributing.
+1. Clone the Repository:
 
-## Live Demo
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
 
-<h4 align="left">Live Preview is available at https://fullstack-todolist-1.onrender.com/</h4>
+1. Create .env File:Copy the provided .env.example to .env and update values if needed:
 
-## Snapshots
+    ```bash
+    # MongoDB Configuration
+    MONGO_USER=angelo
+    MONGO_PASSWORD=mypassword123
+    DB_HOST=db
+    DB_PORT=27017
+    DB_NAME=todos
 
-<img src="./Frontend/src/assets/home-snapshot.png" alt="home page"/>
+    # Backend Configuration
+    BACKEND_PORT=3000
+
+    # Frontend Configuration
+    FRONTEND_PORT=3001
+    VITE_API_URL=http://backend:3000/api/
+    ```
+
+1. Build and Run Containers
+
+    ```bash
+    docker compose up --build
+    ```
+
+    - Builds images for frontend, backend, and database.
+    - Starts containers, mapping ports 3001 (frontend) and 3000 (backend).
+    - Press Ctrl+C to stop, or use docker compose up -d for background mode.
+
+1. Access the Application:
+
+    - **Frontend**: Open http://localhost:3001 in a browser.
+    - **Backend API**: Test with curl http://localhost:3000/api/gettodos.
+    - **MongoDB**: Connect via docker exec -it db mongosh -u angelo -p mypassword123.
+
+1. Stop Containers:
+
+    ```bash
+    docker compose down
+    ```
+
+    To remove volumes (reset database), use:
+
+    ```bash
+    docker compose down -v
+    ```
+
+## Development Notes
+
+Frontend: Built with Vite, uses serve in production. Source in Frontend/.
+Backend: Node.js/Express, connects to MongoDB via Mongoose. Source in Backend/.
+Database: MongoDB latest, persists data in mongo_data volume.
